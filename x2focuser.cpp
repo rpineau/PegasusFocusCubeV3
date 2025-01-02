@@ -120,7 +120,7 @@ void X2Focuser::deviceInfoNameLong(BasicStringInterface& str) const
 
 void X2Focuser::deviceInfoDetailedDescription(BasicStringInterface& str) const		
 {
-	str = "Pegasus Focus Controller";
+	str = "Pegasus Focus Cube V3";
 }
 
 void X2Focuser::deviceInfoFirmwareVersion(BasicStringInterface& str)				

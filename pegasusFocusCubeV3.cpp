@@ -598,7 +598,7 @@ int CPegasusFocusCobeV3::deviceCommand(const std::string sCmd, std::string &sRes
 	if(!localResp.size())
 		return BAD_CMD_RESPONSE;
 
-	sResp = localResp.substr(1, localResp.size());
+	sResp.assign(localResp);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] response : " << sResp << std::endl;
