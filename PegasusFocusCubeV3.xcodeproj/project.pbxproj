@@ -3,13 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		9306A75C1EDE325800A1E90B /* pegasusFocusCubeV3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9306A75A1EDE325800A1E90B /* pegasusFocusCubeV3.cpp */; };
 		9306A75D1EDE325800A1E90B /* pegasusFocusCubeV3.h in Headers */ = {isa = PBXBuildFile; fileRef = 9306A75B1EDE325800A1E90B /* pegasusFocusCubeV3.h */; };
-		933A04321EE0BD5D00D06551 /* StopWatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 933A04311EE0BD5D00D06551 /* StopWatch.h */; };
 		933E14251EDCA6B90044D947 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 933E14211EDCA6B90044D947 /* main.cpp */; };
 		933E14261EDCA6B90044D947 /* main.h in Headers */ = {isa = PBXBuildFile; fileRef = 933E14221EDCA6B90044D947 /* main.h */; };
 		933E14271EDCA6B90044D947 /* x2focuser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 933E14231EDCA6B90044D947 /* x2focuser.cpp */; };
@@ -21,8 +20,7 @@
 /* Begin PBXFileReference section */
 		9306A75A1EDE325800A1E90B /* pegasusFocusCubeV3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pegasusFocusCubeV3.cpp; sourceTree = "<group>"; };
 		9306A75B1EDE325800A1E90B /* pegasusFocusCubeV3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pegasusFocusCubeV3.h; sourceTree = "<group>"; };
-		933A04311EE0BD5D00D06551 /* StopWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopWatch.h; sourceTree = "<group>"; };
-		933E14191EDCA6680044D947 /* PegasusFocusCubeV3.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = PegasusFocusCubeV3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		933E14191EDCA6680044D947 /* libPegasusFocusCubeV3.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libPegasusFocusCubeV3.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		933E14211EDCA6B90044D947 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		933E14221EDCA6B90044D947 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		933E14231EDCA6B90044D947 /* x2focuser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = x2focuser.cpp; sourceTree = "<group>"; };
@@ -56,7 +54,7 @@
 		933E141A1EDCA6680044D947 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				933E14191EDCA6680044D947 /* PegasusFocusCubeV3.dylib */,
+				933E14191EDCA6680044D947 /* libPegasusFocusCubeV3.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,7 +62,6 @@
 		933E14201EDCA6AC0044D947 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				933A04311EE0BD5D00D06551 /* StopWatch.h */,
 				9306A75A1EDE325800A1E90B /* pegasusFocusCubeV3.cpp */,
 				9306A75B1EDE325800A1E90B /* pegasusFocusCubeV3.h */,
 				933E14211EDCA6B90044D947 /* main.cpp */,
@@ -93,7 +90,6 @@
 			files = (
 				933E14281EDCA6B90044D947 /* x2focuser.h in Headers */,
 				933E14261EDCA6B90044D947 /* main.h in Headers */,
-				933A04321EE0BD5D00D06551 /* StopWatch.h in Headers */,
 				9306A75D1EDE325800A1E90B /* pegasusFocusCubeV3.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -115,7 +111,7 @@
 			);
 			name = PegasusFocusCubeV3;
 			productName = PegasusFocusCubeV3;
-			productReference = 933E14191EDCA6680044D947 /* PegasusFocusCubeV3.dylib */;
+			productReference = 933E14191EDCA6680044D947 /* libPegasusFocusCubeV3.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -124,7 +120,8 @@
 		933E14111EDCA6680044D947 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1220;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = "RTI-Zone";
 				TargetAttributes = {
 					933E14181EDCA6680044D947 = {
@@ -135,7 +132,7 @@
 				};
 			};
 			buildConfigurationList = 933E14141EDCA6680044D947 /* Build configuration list for PBXProject "PegasusFocusCubeV3" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 15.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -191,6 +188,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -199,10 +197,12 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -217,7 +217,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -249,6 +249,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -257,10 +258,12 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -269,7 +272,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
@@ -279,6 +282,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -288,7 +292,7 @@
 					"\"$(SRCROOT)/\"",
 					"\"$(SRCROOT)/../..\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -298,6 +302,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -307,7 +312,7 @@
 					"\"$(SRCROOT)/\"",
 					"\"$(SRCROOT)/../..\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

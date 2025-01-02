@@ -1,9 +1,8 @@
-//
-//  FCV3.h
-//  NexDome
-//
-//  Created by Rodolphe Pineau on 2017/05/30.
-//  NexDome X2 plugin
+// pegasysFocusCubeV3.h
+// Pegasus Astro Focus Cube V3 X2 plugin
+// Created by Rodolphe Pineau on 2024-11-06
+// Copyright © 2024 Rodolphe Pineau. All rights reserved
+
 
 #ifndef __PEGASUS_C__
 #define __PEGASUS_C__
@@ -19,6 +18,7 @@
 #include <stdexcept>
 #include <chrono>
 #include <thread>
+#include <iomanip>
 
 #ifndef WIN32
 #include <unistd.h>
@@ -29,7 +29,7 @@
 #include "../../licensedinterfaces/loggerinterface.h"
 #include "../../licensedinterfaces/sleeperinterface.h"
 
-#define PLUGIN_DEBUG 2   // define this to have log files, 1 = bad stuff only, 2 and up.. full debug
+#define PLUGIN_DEBUG 3   // define this to have log files, 1 = bad stuff only, 2 and up.. full debug
 
 #define PLUGIN_VERSION      1.0
 
@@ -64,11 +64,11 @@ typedef struct {
 #define fBacklash	5
 
 
-class CPegasusFocusCobeV3
+class CPegasusFocusCubeV3
 {
 public:
-    CPegasusFocusCobeV3();
-    ~CPegasusFocusCobeV3();
+    CPegasusFocusCubeV3();
+    ~CPegasusFocusCubeV3();
 
     int         Connect(const std::string sPortName);
     void        Disconnect(void);
@@ -109,6 +109,10 @@ public:
 
     int         setReverseEnable(bool bEnabled);
     int         getReverseEnable(bool &bEnabled);
+
+#ifdef PLUGIN_DEBUG
+	void log(std::string sLogString);
+#endif
 
 protected:
 

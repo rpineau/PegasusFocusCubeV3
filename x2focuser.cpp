@@ -1,7 +1,6 @@
 
 #include "x2focuser.h"
-
-X2Focuser::X2Focuser(const char* pszDisplayName, 
+X2Focuser::X2Focuser(const char* pszDisplayName,
 												const int& nInstanceIndex,
 												SerXInterface						* pSerXIn, 
 												TheSkyXFacadeForDriversInterface	* pTheSkyXIn, 
@@ -19,6 +18,7 @@ X2Focuser::X2Focuser(const char* pszDisplayName,
 	m_pLogger						= pLoggerIn;	
 	m_pIOMutex						= pIOMutexIn;
 	m_pTickCount					= pTickCountIn;
+	m_nPrivateMulitInstanceIndex	= nInstanceIndex;
 
 	m_bLinked = false;
 	m_nPosition = 0;
@@ -32,7 +32,6 @@ X2Focuser::X2Focuser(const char* pszDisplayName,
         m_bReverseEnabled = m_pIniUtil->readInt(PARENT_KEY, REVERSE_ENABLED, false);
     }
 	m_PegasusController.SetSerxPointer(m_pSerX);
-
 }
 
 X2Focuser::~X2Focuser()
@@ -103,7 +102,7 @@ void X2Focuser::deviceInfoNameShort(BasicStringInterface& str) const
     X2Focuser* pMe = (X2Focuser*)this;
 
     X2MutexLocker ml(pMe->GetMutex());
-
+	
 
     if(!m_bLinked) {
         str="NA";
@@ -126,6 +125,12 @@ void X2Focuser::deviceInfoDetailedDescription(BasicStringInterface& str) const
 void X2Focuser::deviceInfoFirmwareVersion(BasicStringInterface& str)				
 {
     X2MutexLocker ml(GetMutex());
+	
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	m_PegasusController.log(ssLog.str());
+#endif
 
     if(!m_bLinked) {
         str="NA";
@@ -140,6 +145,11 @@ void X2Focuser::deviceInfoFirmwareVersion(BasicStringInterface& str)
 
 void X2Focuser::deviceInfoModel(BasicStringInterface& str)							
 {
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	m_PegasusController.log(ssLog.str());
+#endif
     deviceInfoNameShort(str);
 }
 
@@ -150,7 +160,15 @@ int	X2Focuser::establishLink(void)
     int err;
 
     X2MutexLocker ml(GetMutex());
-    // get serial port device name
+	
+
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	m_PegasusController.log(ssLog.str());
+#endif
+
+	// get serial port device name
     portNameOnToCharPtr(szPort,DRIVER_MAX_STRING);
     err = m_PegasusController.Connect(szPort);
     if(err)
@@ -166,10 +184,18 @@ int	X2Focuser::establishLink(void)
 
 int	X2Focuser::terminateLink(void)
 {
-    if(!m_bLinked)
+	X2MutexLocker ml(GetMutex());
+	
+
+	if(!m_bLinked)
         return SB_OK;
 
-    X2MutexLocker ml(GetMutex());
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	m_PegasusController.log(ssLog.str());
+#endif
+
     m_PegasusController.Disconnect();
     m_bLinked = false;
     return SB_OK;
@@ -200,10 +226,17 @@ int	X2Focuser::execModalSettingsDialog(void)
     int nBacklashSteps = 0;
     bool bBacklashEnabled = false;
     bool bReverse = false;
+	std::stringstream ssLog;
 
-    if (NULL == ui)
+	if (NULL == ui)
         return ERR_POINTER;
 
+
+#ifdef PLUGIN_DEBUG
+	ssLog << "[" <<  __func__ << "] Loading PegasusFocusCubeV3.ui";
+	m_PegasusController.log(ssLog.str());
+	std::stringstream().swap(ssLog);
+#endif
     if ((nErr = ui->loadUserInterface("PegasusFocusCubeV3.ui", deviceType(), m_nPrivateMulitInstanceIndex)))
         return nErr;
 
@@ -211,17 +244,31 @@ int	X2Focuser::execModalSettingsDialog(void)
         return ERR_POINTER;
 
     X2MutexLocker ml(GetMutex());
+	
 
 	// set controls values
     if(m_bLinked) {
+#ifdef PLUGIN_DEBUG
+		ssLog << "[" <<  __func__ << "] Focusser is connected";
+		m_PegasusController.log(ssLog.str());
+		std::stringstream().swap(ssLog);
+#endif
         // get data from device
         m_PegasusController.getConsolidatedStatus();
-        // enable all controls
-
+#ifdef PLUGIN_DEBUG
+		ssLog << "[" <<  __func__ << "] getConsolidatedStatus OK";
+		m_PegasusController.log(ssLog.str());
+		std::stringstream().swap(ssLog);
+#endif
         // motor max spped
         nErr = m_PegasusController.getMotoMaxSpeed(nMaxSpeed);
         if(nErr)
             return nErr;
+#ifdef PLUGIN_DEBUG
+		ssLog << "[" <<  __func__ << "] getMotoMaxSpeed OK";
+		m_PegasusController.log(ssLog.str());
+		std::stringstream().swap(ssLog);
+#endif
         dx->setEnabled("maxSpeed", true);
         dx->setEnabled("pushButton", true);
         dx->setPropertyInt("maxSpeed", "value", nMaxSpeed);
@@ -230,6 +277,11 @@ int	X2Focuser::execModalSettingsDialog(void)
         nErr = m_PegasusController.getPosition(nPosition);
         if(nErr)
             return nErr;
+#ifdef PLUGIN_DEBUG
+		ssLog << "[" <<  __func__ << "] getPosition OK";
+		m_PegasusController.log(ssLog.str());
+		std::stringstream().swap(ssLog);
+#endif
         dx->setEnabled("newPos", true);
         dx->setEnabled("pushButton_2", true);
         dx->setPropertyInt("newPos", "value", nPosition);
@@ -237,10 +289,17 @@ int	X2Focuser::execModalSettingsDialog(void)
         // reverse
         dx->setEnabled("reverseDir", true);
         nErr = m_PegasusController.getReverseEnable(bReverse);
+		if(nErr)
+			return nErr;
         if(bReverse)
             dx->setChecked("reverseDir", true);
         else
             dx->setChecked("reverseDir", false);
+#ifdef PLUGIN_DEBUG
+		ssLog << "[" <<  __func__ << "] getReverseEnable OK";
+		m_PegasusController.log(ssLog.str());
+		std::stringstream().swap(ssLog);
+#endif
 
         // backlash
         dx->setEnabled("backlashSteps", true);
@@ -248,6 +307,11 @@ int	X2Focuser::execModalSettingsDialog(void)
         if(nErr)
             return nErr;
         dx->setPropertyInt("backlashSteps", "value", nBacklashSteps);
+#ifdef PLUGIN_DEBUG
+		ssLog << "[" <<  __func__ << "] getBacklashComp OK";
+		m_PegasusController.log(ssLog.str());
+		std::stringstream().swap(ssLog);
+#endif
 
         if(!nBacklashSteps)  // backlash = 0 means disabled.
             bBacklashEnabled = false;
@@ -280,6 +344,12 @@ int	X2Focuser::execModalSettingsDialog(void)
         dx->setChecked("limitEnable", true);
     else
         dx->setChecked("limitEnable", false);
+
+#ifdef PLUGIN_DEBUG
+	ssLog << "[" <<  __func__ << "] getPosLimit OK";
+	m_PegasusController.log(ssLog.str());
+	std::stringstream().swap(ssLog);
+#endif
 
     //Display the user interface
     if ((nErr = ui->exec(bPressedOK)))
@@ -364,11 +434,16 @@ void X2Focuser::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 int	X2Focuser::focPosition(int& nPosition)
 {
     int err;
-
+	X2MutexLocker ml(GetMutex());
+	
     if(!m_bLinked)
         return NOT_CONNECTED;
 
-    X2MutexLocker ml(GetMutex());
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	m_PegasusController.log(ssLog.str());
+#endif
 
     err = m_PegasusController.getPosition(nPosition);
     m_nPosition = nPosition;
@@ -393,22 +468,36 @@ int	X2Focuser::focMaximumLimit(int& nPosLimit)
 }
 
 int	X2Focuser::focAbort()								
-{   int err;
+{
+	int err;
+	//X2MutexLocker ml(GetMutex());
+	
 
     if(!m_bLinked)
         return NOT_CONNECTED;
 
-    X2MutexLocker ml(GetMutex());
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	m_PegasusController.log(ssLog.str());
+#endif
     err = m_PegasusController.haltFocuser();
     return err;
 }
 
 int	X2Focuser::startFocGoto(const int& nRelativeOffset)	
 {
-    if(!m_bLinked)
+	//X2MutexLocker ml(GetMutex());
+	
+
+	if(!m_bLinked)
         return NOT_CONNECTED;
 
-    X2MutexLocker ml(GetMutex());
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	m_PegasusController.log(ssLog.str());
+#endif
     m_PegasusController.moveRelativeToPosision(nRelativeOffset);
     return SB_OK;
 }
@@ -417,13 +506,20 @@ int	X2Focuser::isCompleteFocGoto(bool& bComplete) const
 {
     int err;
 
-    if(!m_bLinked)
+	X2Focuser* pMe = (X2Focuser*)this;
+	X2MutexLocker ml(pMe->GetMutex());
+	
+	if(!m_bLinked)
         return NOT_CONNECTED;
 
-    X2Focuser* pMe = (X2Focuser*)this;
-    X2MutexLocker ml(pMe->GetMutex());
 
-    err = pMe->m_PegasusController.isGoToComplete(bComplete);
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	pMe->m_PegasusController.log(ssLog.str());
+#endif
+
+	err = pMe->m_PegasusController.isGoToComplete(bComplete);
 
     return err;
 }
@@ -431,10 +527,18 @@ int	X2Focuser::isCompleteFocGoto(bool& bComplete) const
 int	X2Focuser::endFocGoto(void)
 {
     int err;
-    if(!m_bLinked)
+
+	X2MutexLocker ml(GetMutex());
+	
+
+	if(!m_bLinked)
         return NOT_CONNECTED;
 
-    X2MutexLocker ml(GetMutex());
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	m_PegasusController.log(ssLog.str());
+#endif
     err = m_PegasusController.getPosition(m_nPosition);
     return err;
 }
@@ -467,26 +571,21 @@ int X2Focuser::focTemperature(double &dTemperature)
     int err = SB_OK;
 
     X2MutexLocker ml(GetMutex());
+	
+
+#ifdef PLUGIN_DEBUG
+	std::stringstream ssLog;
+	ssLog << "[" <<  __func__ << "] Called";
+	m_PegasusController.log(ssLog.str());
+#endif
 
     if(!m_bLinked) {
         dTemperature = -100.0;
         return NOT_CONNECTED;
     }
 
-    // Taken from Richard's Robofocus plugin code.
-    // this prevent us from asking the temperature too often
-    static CStopWatch timer;
-
-    if(timer.GetElapsedSeconds() > 30.0f) {
-        X2MutexLocker ml(GetMutex());
-        err = m_PegasusController.getTemperature(m_fLastTemp);
-        timer.Reset();
-    }
-
-    if(m_fLastTemp == -127.0)
-        dTemperature = -100; // special TSX value to say that the temperature is not supported.
-    else
-        dTemperature = m_fLastTemp;
+	err = m_PegasusController.getTemperature(m_fLastTemp);
+	dTemperature = m_fLastTemp;
 
     return err;
 }

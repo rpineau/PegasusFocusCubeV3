@@ -22,7 +22,6 @@
 #include "../../licensedinterfaces/serialportparams2interface.h"
 #include "../../licensedinterfaces/sberrorx.h"
 
-#include "StopWatch.h"
 #include "pegasusFocusCubeV3.h"
 
 // Forward declare the interfaces that this device is dependent upon
@@ -48,14 +47,13 @@ class TickCountInterface;
 #define LOG_BUFFER_SIZE 256
 #define TMP_BUF_SIZE    1024
 
-/*!
-\brief The X2Focuser example.
+#if defined(WIN32)
+#define __CLASS_ATTRIBUTE__(x)
+#else
+#define __CLASS_ATTRIBUTE__(x) __attribute__(x)
+#endif
 
-\ingroup Example
-
-Use this example to write an X2Focuser driver.
-*/
-class X2Focuser : public FocuserDriverInterface, public SerialPortParams2Interface, public ModalSettingsDialogInterface, public X2GUIEventInterface, public FocuserTemperatureInterface
+class __CLASS_ATTRIBUTE__((weak,visibility("default"))) X2Focuser : public FocuserDriverInterface, public SerialPortParams2Interface, public ModalSettingsDialogInterface, public X2GUIEventInterface, public FocuserTemperatureInterface
 {
 public:
 	X2Focuser(const char                        *pszDisplayName,
@@ -157,7 +155,8 @@ private:
 	SleeperInterface						*GetSleeper() {return m_pSleeper; }
 	BasicIniUtilInterface					*GetSimpleIniUtil() {return m_pIniUtil; }
 	LoggerInterface							*GetLogger() {return m_pLogger; }
-	MutexInterface							*GetMutex()  {return m_pIOMutex;}
+	MutexInterface							*GetMutex() {return m_pIOMutex;}
+
 	TickCountInterface						*GetTickCountInterface() {return m_pTickCount;}
 
     void                                    portNameOnToCharPtr(char* pszPort, const int& nMaxSize) const;
@@ -165,9 +164,8 @@ private:
 	bool                                    m_bLinked;
 	int                                     m_nPosition;
     double                                  m_fLastTemp;
-	CPegasusFocusCobeV3                     m_PegasusController;
+	CPegasusFocusCubeV3                     m_PegasusController;
     bool                                    m_bReverseEnabled;
-
 };
 
 

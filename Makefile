@@ -6,9 +6,9 @@ CPPFLAGS = -fPIC -Wall -Wextra -O2 -g -DSB_LINUX_BUILD -I. -I./../../
 LDFLAGS = -shared -lstdc++
 RM = rm -f
 STRIP = strip
-TARGET_LIB = libPegasusController.so
+TARGET_LIB = libPegasusFocusCubeV3.so
 
-SRCS = main.cpp pegasus.cpp x2focuser.cpp
+SRCS = main.cpp pegasusFocusCubeV3.cpp x2focuser.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 .PHONY: all

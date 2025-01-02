@@ -1,13 +1,13 @@
-//
-//  nexdome.cpp
-//  NexDome X2 plugin
-//
-//  Created by Rodolphe Pineau on 6/11/2016.
+// pegasysFocusCubeV3.cpp
+// Pegasus Astro Focus Cube V3 X2 plugin
+// Created by Rodolphe Pineau on 2024-11-06
+// Copyright © 2024 Rodolphe Pineau. All rights reserved
+
 
 #include "pegasusFocusCubeV3.h"
 
 
-CPegasusFocusCobeV3::CPegasusFocusCobeV3()
+CPegasusFocusCubeV3::CPegasusFocusCubeV3()
 {
 	std::memset(&m_globalStatus,0,sizeof(m_globalStatus));
 
@@ -31,7 +31,7 @@ CPegasusFocusCobeV3::CPegasusFocusCobeV3()
 
 }
 
-CPegasusFocusCobeV3::~CPegasusFocusCobeV3()
+CPegasusFocusCubeV3::~CPegasusFocusCubeV3()
 {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Called." << std::endl;
@@ -42,7 +42,7 @@ CPegasusFocusCobeV3::~CPegasusFocusCobeV3()
 #endif
 }
 
-int CPegasusFocusCobeV3::Connect(const std::string sPortName)
+int CPegasusFocusCubeV3::Connect(const std::string sPortName)
 {
     int nErr = PLUGIN_OK;
     int nDevice;
@@ -63,9 +63,13 @@ int CPegasusFocusCobeV3::Connect(const std::string sPortName)
     else
         m_bIsConnected = false;
 
-    if(!m_bIsConnected)
-        return nErr;
-
+	if(!m_bIsConnected) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error connecting to port " << sPortName << ", nErr = " << nErr << std::endl;
+		m_sLogFile.flush();
+#endif
+		return nErr;
+	}
 	m_Port.assign(sPortName);
 
 
@@ -90,7 +94,7 @@ int CPegasusFocusCobeV3::Connect(const std::string sPortName)
     return nErr;
 }
 
-void CPegasusFocusCobeV3::Disconnect()
+void CPegasusFocusCubeV3::Disconnect()
 {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Called." << std::endl;
@@ -103,7 +107,7 @@ void CPegasusFocusCobeV3::Disconnect()
 }
 
 #pragma mark move commands
-int CPegasusFocusCobeV3::haltFocuser()
+int CPegasusFocusCubeV3::haltFocuser()
 {
     int nErr;
     std::string sResp;
@@ -122,7 +126,7 @@ int CPegasusFocusCobeV3::haltFocuser()
 	return nErr;
 }
 
-int CPegasusFocusCobeV3::gotoPosition(int nPos)
+int CPegasusFocusCubeV3::gotoPosition(int nPos)
 {
     int nErr;
     std::string sCmd;
@@ -152,7 +156,7 @@ int CPegasusFocusCobeV3::gotoPosition(int nPos)
     return nErr;
 }
 
-int CPegasusFocusCobeV3::moveRelativeToPosision(int nSteps)
+int CPegasusFocusCubeV3::moveRelativeToPosision(int nSteps)
 {
     int nErr;
 
@@ -171,7 +175,7 @@ int CPegasusFocusCobeV3::moveRelativeToPosision(int nSteps)
 
 #pragma mark command complete functions
 
-int CPegasusFocusCobeV3::isGoToComplete(bool &bComplete)
+int CPegasusFocusCubeV3::isGoToComplete(bool &bComplete)
 {
     int nErr = PLUGIN_OK;
 	
@@ -182,7 +186,7 @@ int CPegasusFocusCobeV3::isGoToComplete(bool &bComplete)
 	m_sLogFile.flush();
 #endif
 
-    getPosition(m_globalStatus.nCurPos);
+	getConsolidatedStatus();
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_globalStatus.nCurPos = " << m_globalStatus.nCurPos << std::endl;
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_nTargetPos = " << m_nTargetPos << std::endl;
@@ -201,7 +205,7 @@ int CPegasusFocusCobeV3::isGoToComplete(bool &bComplete)
     return nErr;
 }
 
-int CPegasusFocusCobeV3::isMotorMoving(bool &bMoving)
+int CPegasusFocusCubeV3::isMotorMoving(bool &bMoving)
 {
     int nErr = PLUGIN_OK;
     std::string sResp;
@@ -230,7 +234,7 @@ int CPegasusFocusCobeV3::isMotorMoving(bool &bMoving)
 }
 
 #pragma mark getters and setters
-int CPegasusFocusCobeV3::getDeviceType(int &nDevice)
+int CPegasusFocusCubeV3::getDeviceType(int &nDevice)
 {
 	int nErr = PLUGIN_OK;
     std::string sResp;
@@ -257,7 +261,7 @@ int CPegasusFocusCobeV3::getDeviceType(int &nDevice)
     return nErr;
 }
 
-int CPegasusFocusCobeV3::getConsolidatedStatus()
+int CPegasusFocusCubeV3::getConsolidatedStatus()
 {
     int nErr;
     std::string sResp;
@@ -316,7 +320,7 @@ int CPegasusFocusCobeV3::getConsolidatedStatus()
     return nErr;
 }
 
-int CPegasusFocusCobeV3::getMotoMaxSpeed(int &nSpeed)
+int CPegasusFocusCubeV3::getMotoMaxSpeed(int &nSpeed)
 {
     int nErr;
     std::string sResp;
@@ -347,7 +351,7 @@ int CPegasusFocusCobeV3::getMotoMaxSpeed(int &nSpeed)
     return nErr;
 }
 
-int CPegasusFocusCobeV3::setMotoMaxSpeed(int nSpeed)
+int CPegasusFocusCubeV3::setMotoMaxSpeed(int nSpeed)
 {
     int nErr;
     std::string sCmd;
@@ -368,7 +372,7 @@ int CPegasusFocusCobeV3::setMotoMaxSpeed(int nSpeed)
     return nErr;
 }
 
-int CPegasusFocusCobeV3::getBacklashComp(int &nSteps)
+int CPegasusFocusCubeV3::getBacklashComp(int &nSteps)
 {
     int nErr;
 	
@@ -386,7 +390,7 @@ int CPegasusFocusCobeV3::getBacklashComp(int &nSteps)
     return nErr;
 }
 
-int CPegasusFocusCobeV3::setBacklashComp(int nSteps)
+int CPegasusFocusCubeV3::setBacklashComp(int nSteps)
 {
     int nErr = PLUGIN_OK;
     std::string sCmd;
@@ -411,7 +415,7 @@ int CPegasusFocusCobeV3::setBacklashComp(int nSteps)
 }
 
 
-int CPegasusFocusCobeV3::getFirmwareVersion(std::string sFirmareVersion)
+int CPegasusFocusCubeV3::getFirmwareVersion(std::string sFirmareVersion)
 {
     int nErr = PLUGIN_OK;
     std::string sResp;
@@ -432,7 +436,7 @@ int CPegasusFocusCobeV3::getFirmwareVersion(std::string sFirmareVersion)
     return nErr;
 }
 
-int CPegasusFocusCobeV3::getTemperature(double &dTemperature)
+int CPegasusFocusCubeV3::getTemperature(double &dTemperature)
 {
     int nErr = PLUGIN_OK;
     std::string sResp;
@@ -445,17 +449,21 @@ int CPegasusFocusCobeV3::getTemperature(double &dTemperature)
 	m_sLogFile.flush();
 #endif
 
-    nErr = deviceCommand("FT\n", sResp, SERIAL_BUFFER_SIZE);
-    if(nErr)
-        return nErr;
+	nErr = getConsolidatedStatus();
+	if(nErr) {
+#ifdef PLUGIN_DEBUG
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error getting status." << std::endl;
+		m_sLogFile.flush();
+#endif
+		return nErr;
+	}
 
-    // convert response
-    dTemperature = std::stod(sResp);
+	dTemperature = m_globalStatus.dTemperature;
 
     return nErr;
 }
 
-int CPegasusFocusCobeV3::getPosition(int &nPosition)
+int CPegasusFocusCubeV3::getPosition(int &nPosition)
 {
     int nErr = PLUGIN_OK;
     std::string sResp;
@@ -470,8 +478,13 @@ int CPegasusFocusCobeV3::getPosition(int &nPosition)
 
 
 	nErr = getConsolidatedStatus();
-    if(nErr)
-        return nErr;
+	if(nErr) {
+#ifdef PLUGIN_DEBUG
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error getting status." << std::endl;
+		m_sLogFile.flush();
+#endif
+		return nErr;
+	}
 
     // convert response
 	nPosition = m_globalStatus.nCurPos;
@@ -479,7 +492,7 @@ int CPegasusFocusCobeV3::getPosition(int &nPosition)
 }
 
 
-int CPegasusFocusCobeV3::syncMotorPosition(int nPos)
+int CPegasusFocusCubeV3::syncMotorPosition(int nPos)
 {
     int nErr = PLUGIN_OK;
     std::string sCmd;
@@ -497,31 +510,37 @@ int CPegasusFocusCobeV3::syncMotorPosition(int nPos)
 	ssCmd << "FN:" << nPos << std::endl;
     nErr = deviceCommand(ssCmd.str(), sResp);
     nErr |= getConsolidatedStatus();
-    return nErr;
+	if(nErr) {
+#ifdef PLUGIN_DEBUG
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error getting status." << std::endl;
+		m_sLogFile.flush();
+#endif
+	}
+	return nErr;
 }
 
-int CPegasusFocusCobeV3::getPosLimit()
+int CPegasusFocusCubeV3::getPosLimit()
 {
     return m_nPosLimit;
 }
 
-void CPegasusFocusCobeV3::setPosLimit(int nLimit)
+void CPegasusFocusCubeV3::setPosLimit(int nLimit)
 {
     m_nPosLimit = nLimit;
 }
 
-bool CPegasusFocusCobeV3::isPosLimitEnabled()
+bool CPegasusFocusCubeV3::isPosLimitEnabled()
 {
     return m_bPosLimitEnabled;
 }
 
-void CPegasusFocusCobeV3::enablePosLimit(bool bEnable)
+void CPegasusFocusCubeV3::enablePosLimit(bool bEnable)
 {
     m_bPosLimitEnabled = bEnable;
 }
 
 
-int CPegasusFocusCobeV3::setReverseEnable(bool bEnabled)
+int CPegasusFocusCubeV3::setReverseEnable(bool bEnabled)
 {
     int nErr = PLUGIN_OK;
     std::string sResp;
@@ -550,7 +569,7 @@ int CPegasusFocusCobeV3::setReverseEnable(bool bEnabled)
     return nErr;
 }
 
-int CPegasusFocusCobeV3::getReverseEnable(bool &bEnabled)
+int CPegasusFocusCubeV3::getReverseEnable(bool &bEnabled)
 {
     int nErr;
 	
@@ -558,6 +577,12 @@ int CPegasusFocusCobeV3::getReverseEnable(bool &bEnabled)
 		return NOT_CONNECTED;
 
     nErr = getConsolidatedStatus();
+	if(nErr) {
+#ifdef PLUGIN_DEBUG
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error getting status." << std::endl;
+		m_sLogFile.flush();
+#endif
+	}
     bEnabled = m_globalStatus.bReverse;
 
     return nErr;
@@ -565,7 +590,7 @@ int CPegasusFocusCobeV3::getReverseEnable(bool &bEnabled)
 
 #pragma mark command and response functions
 
-int CPegasusFocusCobeV3::deviceCommand(const std::string sCmd, std::string &sResp, int nTimeout, char cEndOfResponse)
+int CPegasusFocusCubeV3::deviceCommand(const std::string sCmd, std::string &sResp, int nTimeout, char cEndOfResponse)
 {
 	int nErr = PLUGIN_OK;
 	unsigned long  ulBytesWrite;
@@ -608,7 +633,7 @@ int CPegasusFocusCobeV3::deviceCommand(const std::string sCmd, std::string &sRes
 	return nErr;
 }
 
-int CPegasusFocusCobeV3::readResponse(std::string &sResp, int nTimeout, char cEndOfResponse)
+int CPegasusFocusCubeV3::readResponse(std::string &sResp, int nTimeout, char cEndOfResponse)
 {
 	int nErr = PLUGIN_OK;
 	char pszBuf[SERIAL_BUFFER_SIZE];
@@ -617,6 +642,11 @@ int CPegasusFocusCobeV3::readResponse(std::string &sResp, int nTimeout, char cEn
 	char *pszBufPtr;
 	int nBytesWaiting = 0 ;
 	int nbTimeouts = 0;
+
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Reading response." << std::endl;
+	m_sLogFile.flush();
+#endif
 
 	sResp.clear();
 	memset(pszBuf, 0, SERIAL_BUFFER_SIZE);
@@ -677,18 +707,19 @@ int CPegasusFocusCobeV3::readResponse(std::string &sResp, int nTimeout, char cEn
 #endif
 
 
-	if(!ulTotalBytesRead)
+	if(!ulTotalBytesRead) {
 		nErr = COMMAND_TIMEOUT; // we didn't get an answer.. so timeout
-	else
+	}
+	else {
 		*(pszBufPtr-1) = 0; //remove the cEndOfResponse
-
-	sResp.assign(pszBuf);
+		sResp.assign(pszBuf);
+	}
 	return nErr;
 }
 
 
 
-int CPegasusFocusCobeV3::parseResp(std::string sResp, std::vector<std::string>  &svParsedResp)
+int CPegasusFocusCubeV3::parseResp(std::string sResp, std::vector<std::string>  &svParsedResp)
 {
     std::string sSegment;
     std::vector<std::string> svSeglist;
@@ -718,7 +749,14 @@ int CPegasusFocusCobeV3::parseResp(std::string sResp, std::vector<std::string>  
 
 #ifdef PLUGIN_DEBUG
 
-const std::string CPegasusFocusCobeV3::getTimeStamp()
+void CPegasusFocusCubeV3::log(std::string sLogString)
+{
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] " << sLogString << std::endl;
+	m_sLogFile.flush();
+
+}
+
+const std::string CPegasusFocusCubeV3::getTimeStamp()
 {
 	time_t     now = time(0);
 	struct tm  tstruct;
